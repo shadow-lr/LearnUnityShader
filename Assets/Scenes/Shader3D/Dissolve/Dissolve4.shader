@@ -1,32 +1,38 @@
-﻿Shader "Unlit/Dissolve1"
+﻿Shader "Unlit/Dissolve4"
 {
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
         _NoiseTex ("Texture", 2D) = "white" {}
-        _Threshold("Threshold", Range(0.0, 1.0)) = 0.5
+        _Threshold ("Threshold", Range(0.0, 1.0)) = 0.5
+        _EdgeLength ("EgdeLength", Range(0.0, 0.2)) = 0.1
+        [HDR] _EdgeColor ("EdgeColor", Color) = (1, 1, 1, 1)
+        [HDR] _EdgeColor1 ("EdgeColor", Color) = (1, 1, 1, 1)
     }
     SubShader
     {
         Tags { "RenderType"="Opaque" }
 
+        Cull Off
+
         Pass
         {
-            Cull Off
-
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
 
             #include "UnityCG.cginc"
-
+			
 			sampler2D _MainTex;
             sampler2D _NoiseTex;
 
             float4 _MainTex_ST;
             float4 _NoiseTex_ST;
 
-            fixed _Threshold;
+            float _Threshold;
+            fixed _EdgeLength;
+            fixed4 _EdgeColor;
+            fixed4 _EdgeColor1;
 
             struct appdata
             {
@@ -55,10 +61,14 @@
                 fixed cutout = tex2D(_NoiseTex, i.noiseUV).r;
                 clip(cutout - _Threshold);
 
-                fixed4 col = tex2D(_MainTex, i.uv);
-                return col;
-            }
+                float degree = saturate((cutout - _Threshold) / _EdgeLength);
+                fixed4 edgeColor =  lerp(_EdgeColor, _EdgeColor1, degree);
 
+                fixed4 col = tex2D(_MainTex, i.uv);
+
+                fixed4 finalColor = lerp(edgeColor, col, degree);
+                return finalColor;
+            }
             ENDCG
         }
     }

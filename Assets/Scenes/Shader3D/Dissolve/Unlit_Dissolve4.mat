@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Unlit_Dissolve1
-  m_Shader: {fileID: 4800000, guid: 941eafd021a30a948bf3b2af7efb695f, type: 3}
+  m_Name: Unlit_Dissolve4
+  m_Shader: {fileID: 4800000, guid: 195d095a9cd21e14fa3ba697d4f9ca36, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -24,9 +24,12 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NoiseTex:
-        m_Texture: {fileID: 2800000, guid: bdc5dcbcb9b89ae4c8350bdf61c7005e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 5ff256f016ef712449652cb01c423ed6, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _Threshold: 0.51
-    m_Colors: []
+    - _EdgeLength: 0.2
+    - _Threshold: 0.46
+    m_Colors:
+    - _EdgeColor: {r: 0.9245283, g: 0.25729796, b: 0.25729796, a: 1}
+    - _EdgeColor1: {r: 0.8867924, g: 0.10457456, b: 0.11200453, a: 1}

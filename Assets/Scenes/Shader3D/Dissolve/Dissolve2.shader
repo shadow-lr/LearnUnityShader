@@ -1,10 +1,12 @@
-﻿Shader "Unlit/Dissolve1"
+﻿Shader "Unlit/Dissolve2"
 {
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
         _NoiseTex ("Texture", 2D) = "white" {}
-        _Threshold("Threshold", Range(0.0, 1.0)) = 0.5
+        _Threshold ("Threshold", Range(0, 1.0)) = 0.5
+        _EdgeLength ("EdgeLength", Range(0, 1.0)) = 0.5
+        [HDR] _EdgeColor ("EdgeColor", Color) = (1, 1, 1, 1)
     }
     SubShader
     {
@@ -13,20 +15,19 @@
         Pass
         {
             Cull Off
-
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
 
             #include "UnityCG.cginc"
-
+			
 			sampler2D _MainTex;
-            sampler2D _NoiseTex;
-
+			sampler2D _NoiseTex;
             float4 _MainTex_ST;
             float4 _NoiseTex_ST;
-
-            fixed _Threshold;
+            float _Threshold;
+            float _EdgeLength;
+            fixed4 _EdgeColor;
 
             struct appdata
             {
@@ -55,10 +56,13 @@
                 fixed cutout = tex2D(_NoiseTex, i.noiseUV).r;
                 clip(cutout - _Threshold);
 
+                // noise贴图的r通道值 - _Threshold小于Length就返回EdgeColor颜色
+                if (cutout - _Threshold < _EdgeLength)
+                    return _EdgeColor;
+
                 fixed4 col = tex2D(_MainTex, i.uv);
                 return col;
             }
-
             ENDCG
         }
     }

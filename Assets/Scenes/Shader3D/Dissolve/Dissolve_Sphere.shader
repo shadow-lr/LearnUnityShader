@@ -52,21 +52,22 @@
         UNITY_INSTANCING_BUFFER_END(Props)
 
         void vert (inout appdata_full v, out Input o) {
-        	UNITY_INITIALIZE_OUTPUT(Input,o);
+        	UNITY_INITIALIZE_OUTPUT(Input, o);
         	float3 pos = mul((float3x3)unity_ObjectToWorld, v.vertex.xyz);
         	//pos.x += _cutoff*5;
-        	float4 tex = tex2Dlod(_Noise, float4(pos, 0)*0.5);
+        	float4 tex = tex2Dlod(_Noise, float4(pos, 0) * 0.5);
     
-        	float4 Gradient = tex2Dlod (_Gradient, float4(v.texcoord.xy,0,0));
-        	float mask = smoothstep(_Cutoff, _Cutoff - 0.3, 1-Gradient);
+        	float4 Gradient = tex2Dlod (_Gradient, float4(v.texcoord.xy, 0, 0));
+        	float mask = smoothstep(_Cutoff, _Cutoff - 0.3, 1 - Gradient);
     	  }
 
         void surf (Input IN, inout SurfaceOutputStandard o)
         {
 			half3 Noise = tex2D (_Noise, IN.uv_Noise);
-			Noise.r = lerp(0, 1, Noise.r);
+			Noise.r = saturate(Noise.r);
 			_cutoff  = lerp(0, _cutoff + _EdgeSize, _cutoff);
 
+			//smoothstep(x) =  x * x (3 - 2 * x)
 			half Edge = smoothstep(_cutoff + _EdgeSize, _cutoff, clamp(Noise.r, _EdgeSize, 1));
 
 			fixed4 c = tex2D (_MainTex, IN.uv_MainTex);

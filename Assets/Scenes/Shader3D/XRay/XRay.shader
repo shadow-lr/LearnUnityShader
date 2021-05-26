@@ -9,7 +9,7 @@
     {
         Tags
         {
-            "Queue" = "Geometry + 100"
+            "Queue" = "Geometry"
             "RenderType"="Opaque"
         }
         //        LOD 100

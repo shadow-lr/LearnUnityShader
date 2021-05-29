@@ -59,7 +59,7 @@
                 for (int j = 0 ; j < SAMPLE_COUNT; ++j)
                 {
                     // 计算采样uv值: 正常uv值+从中间向边缘逐渐增加的采样距离
-                    float2 uv = i.uv + _BlurFactor * dir * j;
+                    float2 uv = i.uv - _BlurFactor * dir * j;
                     outColor += tex2D(_MainTex, uv);
                 }
 

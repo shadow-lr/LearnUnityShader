@@ -39,16 +39,40 @@
                 float4 vertex : SV_POSITION;
             };
 
-            v2f vert (appdata v)
+            // 视角空间法线外拓
+            // v2f vert (appdata v)
+            // {
+            //     v2f o;
+            //     o.vertex = UnityObjectToClipPos(v.vertex);
+            //     // 把法线转换成视图空间
+            //     float3 vnormal = mul((float3x3)UNITY_MATRIX_IT_MV, v.normal);
+            //     // 把法线转换成投影空间
+            //     float2 pnormal_xy = mul((float2x2)UNITY_MATRIX_P, vnormal.xy);
+            //     o.vertex.xy = o.vertex + pnormal_xy * _OutLine;
+            //     return o;
+            // }
+
+            // 物体空间法线外括 性能最好
+            // v2f vert(appdata_base v)
+            // {
+            //     // 物体顶点法线外扩
+            //     v.vertex.xyz += normalize(v.normal) * _OutLine / 10;
+            //     v2f o;
+            //     o.vertex = UnityObjectToClipPos(v.vertex);
+            //     return o;
+            // }
+
+            //裁剪空间法线外拓
+            v2f vert(appdata_base v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
-                // 把法线转换成视图空间
-                float3 vnormal = mul((float3x3)UNITY_MATRIX_IT_MV, v.normal);
-                // 把法线转换成投影空间
-                float2 pnormal_xy = mul((float2x2)UNITY_MATRIX_P, vnormal.xy);
-                o.vertex.xy = o.vertex + pnormal_xy * _OutLine;
-                return o;
+                float3 normal = normalize(mul((float3x3)UNITY_MATRIX_IT_MV, v.normal));
+
+                // 把一个视口坐标转换成屏幕像素坐标
+                float2 viewNoraml = TransformViewToProjection(normal.xy);
+				o.vertex.xy += viewNoraml * _OutLine;
+				return o;
             }
 
             fixed4 frag (v2f i) : SV_Target

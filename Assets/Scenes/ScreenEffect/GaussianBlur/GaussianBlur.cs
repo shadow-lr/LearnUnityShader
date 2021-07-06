@@ -17,9 +17,9 @@ public class GaussianBlur : PostEffectsBase
         }
     }
 
-    [Header("降采样")] [Range(0, 5)] public int downSample = 1;
-    [Header("模糊半径")] [Range(0, 5)] public int graussianRadius = 1;
-    [Header("迭代")] [Range(0, 5)] public int iteration = 1;
+    [Header("降采样")] [Range(1, 8)] public int downSample = 1;
+    [Range(0.2f, 3.0f)]public float blurSpread= 0.6f;
+    [Header("迭代")] [Range(0, 4)] public int iteration = 1;
 
 
     void Start()
@@ -30,24 +30,34 @@ public class GaussianBlur : PostEffectsBase
     {
         if (material)
         {
-            RenderTexture rt1 = RenderTexture.GetTemporary(source.width >> downSample, source.height >> downSample, 0,
-                source.format);
+            int rtW = source.width;
+            int rtH = source.height;
 
-            RenderTexture rt2 = RenderTexture.GetTemporary(source.width >> downSample, source.height >> downSample, 0,
-                source.format);
+            RenderTexture buffer0 = RenderTexture.GetTemporary(rtW, rtH, 0);
+            buffer0.filterMode = FilterMode.Bilinear;
+            
+            Graphics.Blit(source, buffer0);
 
-            Graphics.Blit(source, rt1);
             for (int i = 0; i < iteration; ++i)
             {
-                material.SetVector("_Offsets", new Vector4(graussianRadius, 0, 0, 0));
-                Graphics.Blit(rt1, rt2, material);
-                material.SetVector("_Offsets", new Vector4(0, graussianRadius, 0, 0));
-                Graphics.Blit(rt2, rt1, material);
-            }
+                material.SetFloat("_BlurSize", 1.0f + i * blurSpread);
 
-            Graphics.Blit(rt1, destination);
-            RenderTexture.ReleaseTemporary(rt1);
-            RenderTexture.ReleaseTemporary(rt2);
+                RenderTexture buffer1 = RenderTexture.GetTemporary(rtW, rtH, 0);
+                
+                // Render the vertical pass
+                RenderTexture.ReleaseTemporary(buffer0);
+
+                buffer0 = buffer1;
+                buffer1 = RenderTexture.GetTemporary(rtW, rtH, 0);
+                
+                // Render the horizontal pass
+                Graphics.Blit(buffer0, buffer1, material, 1);
+                
+                RenderTexture.ReleaseTemporary(buffer0);
+                buffer0 = buffer1;
+            }
+            Graphics.Blit(buffer0, destination);
+            RenderTexture.ReleaseTemporary(buffer0);
         }
     }
 }

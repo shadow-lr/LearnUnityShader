@@ -31,11 +31,39 @@ public class Bloom : PostEffectsBase
     {
         if (material)
         {
-            // material.SetFloat("_EdgeOnly", edgesOnly);
-            // material.SetColor("_EdgeColor", edgeColor);
-            // material.SetColor("_BackgroundColor", backgroundColor);
+            material.SetFloat("_LuminanceThreshold", luminanceThreshold);
 
-            Graphics.Blit(source, destination, material);
+            int rtW = source.width / downSample;
+            int rtH = source.height / downSample;
+
+            RenderTexture buffer0 = RenderTexture.GetTemporary(rtW, rtH, 0);
+            buffer0.filterMode = FilterMode.Bilinear;
+
+            Graphics.Blit(source, buffer0, material, 0);
+
+            for (int i = 0; i < iterations; ++i)
+            {
+                material.SetFloat("_BlurSize", 1.0f + i * blurSpread);
+
+                RenderTexture buffer1 = RenderTexture.GetTemporary(rtW, rtH, 0);
+
+                // Render the vertical pass
+                Graphics.Blit(buffer0, buffer1, material, 1);
+
+                RenderTexture.ReleaseTemporary(buffer0);
+                buffer0 = buffer1;
+                buffer1 = RenderTexture.GetTemporary(rtW, rtH, 0);
+
+                // Render the horizontal pass
+                Graphics.Blit(buffer0, buffer1, material, 2);
+
+                RenderTexture.ReleaseTemporary(buffer0);
+                buffer0 = buffer1;
+            }
+
+            material.SetTexture("_Bloom", buffer0);
+            Graphics.Blit(source, destination, material, 3);
+            RenderTexture.ReleaseTemporary(buffer0);
         }
         else
         {

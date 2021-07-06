@@ -10,6 +10,7 @@
 
         Pass
         {
+            Name "MyPass"
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag

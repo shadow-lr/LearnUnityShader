@@ -5,6 +5,8 @@ learning the shader from Unity and practise it in the scenes
 
 - GaussianBlur
 - RadialBlur
+- EdgeDetection
+- Bloom
 
 ### Shader2D
 

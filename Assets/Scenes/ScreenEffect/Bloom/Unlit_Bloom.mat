@@ -29,5 +29,5 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _BlurSize: 1.6
-    - _LuminanceThreshold: 0.5
+    - _LuminanceThreshold: 0.6
     m_Colors: []

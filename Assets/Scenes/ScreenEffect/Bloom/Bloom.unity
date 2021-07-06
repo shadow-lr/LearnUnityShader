@@ -419,11 +419,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bloomShader: {fileID: 4800000, guid: 192dbb32ccb954847a6203c59e8c6d36, type: 3}
-  bloomMaterial: {fileID: 2100000, guid: 71b4ca06ca3ccd94483719d93e1b66dd, type: 2}
-  iterations: 2
-  blurSpread: 0.6
-  downSample: 2
-  luminanceThreshold: 0.6
+  bloomMaterial: {fileID: 0}
+  iterations: 4
+  blurSpread: 3
+  downSample: 5
+  luminanceThreshold: 4
 --- !u!81 &1488735139
 AudioListener:
   m_ObjectHideFlags: 0

@@ -418,12 +418,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a9966f0baf3ef46a68b4c1830ad378, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bloomShader: {fileID: 4800000, guid: 192dbb32ccb954847a6203c59e8c6d36, type: 3}
-  bloomMaterial: {fileID: 0}
-  iterations: 4
-  blurSpread: 3
-  downSample: 5
-  luminanceThreshold: 4
+  BloomShader: {fileID: 4800000, guid: 5fb2609c0f4e9724b98e8636122bfd68, type: 3}
+  _bloomMaterial: {fileID: 0}
+  Iterations: 2
+  BlurSperad: 0.95
+  DownSample: 3
+  LuminanceThreshold: 0.6
 --- !u!81 &1488735139
 AudioListener:
   m_ObjectHideFlags: 0

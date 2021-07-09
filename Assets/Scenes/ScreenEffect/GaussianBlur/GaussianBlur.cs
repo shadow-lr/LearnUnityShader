@@ -30,8 +30,8 @@ public class GaussianBlur : PostEffectsBase
     {
         if (material)
         {
-            int rtW = source.width;
-            int rtH = source.height;
+            int rtW = source.width / downSample;
+            int rtH = source.height / downSample;
 
             RenderTexture buffer0 = RenderTexture.GetTemporary(rtW, rtH, 0);
             buffer0.filterMode = FilterMode.Bilinear;
@@ -43,6 +43,8 @@ public class GaussianBlur : PostEffectsBase
                 material.SetFloat("_BlurSize", 1.0f + i * blurSpread);
 
                 RenderTexture buffer1 = RenderTexture.GetTemporary(rtW, rtH, 0);
+                
+                Graphics.Blit(buffer0, buffer1, material, 0);
                 
                 // Render the vertical pass
                 RenderTexture.ReleaseTemporary(buffer0);
@@ -58,6 +60,10 @@ public class GaussianBlur : PostEffectsBase
             }
             Graphics.Blit(buffer0, destination);
             RenderTexture.ReleaseTemporary(buffer0);
+        }
+        else
+        {
+            Graphics.Blit(source, destination);
         }
     }
 }

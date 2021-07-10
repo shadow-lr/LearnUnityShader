@@ -21,11 +21,6 @@ public class GaussianBlur : PostEffectsBase
     [Range(0.2f, 3.0f)]public float blurSpread= 0.6f;
     [Header("迭代")] [Range(0, 4)] public int iteration = 1;
 
-
-    void Start()
-    {
-    }
-
     void OnRenderImage(RenderTexture source, RenderTexture destination)
     {
         if (material)

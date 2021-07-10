@@ -1,17 +1,5 @@
 ﻿Shader "Unlit/Bloom"
 {
-    // Properties
-    // {
-    //     _MainTex ("Texture", 2D) = "white" {}
-    //     // 高斯模糊的较量区域
-    //     _Bloom ("Bloom (RGB)", 2D) = "black" {}
-    //     // 提取较量区域的阈值
-    //     _LuminanceThreshold ("Luminance Threshold", float) = 0.5
-    //     // 控制不同迭代之间高斯模糊的模糊区域范围
-    //     [Tex]_BlurSize ("Blur Size", Float) = 1.0 
-    // }
-
-    
 	Properties
 	{
 		_MainTex ("Base (RGB)", 2D) = "white" {}
@@ -21,80 +9,10 @@
 		_LuminanceThreshold("Luminance Threshold", Float) = 0.5
 		//控制不同迭代之间高斯模糊的模糊区域范围
 		_BlurSize("Blur Size", Float) = 1.0
- 
 	}
     
     SubShader
     {
-    //     Tags { "RenderType"="Opaque" }
-
-    //     CGINCLUDE
-    //     #include "UnityCG.cginc"
-
-    //         #pragma vertex vert
-    //         #pragma fragment frag
-
-    //         #include "UnityCG.cginc"
-
-	// 		sampler2D _MainTex;
-    //         float4 _MainTex_TexelSize;
-
-    //         sampler2D _Bloom;
-    //         float _LuminanceThreshold;
-    //         float _BlurSize;
-
-    //         struct appdata
-    //         {
-    //             float4 vertex : POSITION;
-    //             float2 uv : TEXCOORD0;
-    //         };
-
-    //         struct v2f
-    //         {
-    //             float2 uv : TEXCOORD0;
-    //             float4 vertex : SV_POSITION;
-    //         };
-
-    //         fixed luminance(fixed4 color)
-    //         {
-    //             return 0.2125 * color.r + 0.7154 * color.g + 0.0721 * color.b;
-    //         }
-
-    //         v2f vert (appdata_img v)
-    //         {
-    //             v2f o;
-    //             o.vertex = UnityObjectToClipPos(v.vertex);
-    //             o.uv.xy = v.texcoord;
-    //             o.uv.zw = v.texcoord;
-
-    //             #if UNITY_UV_STARTS_AT_TOP
-    //             if (_MainTex_TexelSize.y < 0.0)
-    //                 o.uv.w = 1.0 - o.uv.w;
-    //             #endif
-
-    //             return o;
-    //         }
-
-    //         fixed4 frag (v2f i) : SV_Target
-    //         {
-    //             // sample the texture
-    //             fixed4 col = tex2D(_MainTex, i.uv);
-    //             return col;
-    //         }
-    //         ENDCG
-        
-    //     UsePass "Unlit/GaussianBlur/GAUSSIANBLUR_VERTICAL"
-    //     UsePass "Unlit/GaussianBlur/GAUSSIANBLUR_HORIZONTAL"
-        
-    //     Pass
-    //     {
-    //         CGPROGRAM
-    //         #pragma vertex vert
-    //         #pragma fragment frag
-
-    //         ENDCG
-    //    }   
-
         CGINCLUDE
 		#include "UnityCG.cginc"
  
@@ -136,7 +54,7 @@
  
 		//定义混合亮部区域与原图像时使用的顶点着色器和片元着色器
 		struct v2fBloom {
-			float4 pos : SV_POSITION;
+			float4 vertex : SV_POSITION;
 			//使用half4同时存储_MainTex与_Bloom的坐标
 			half4 uv : TEXCOORD0;
 		};
@@ -169,6 +87,7 @@
 		
 		ZTest Always Cull Off Zwrite Off
  
+		// 提取图像中较量的区域
 		Pass
 		{
 			CGPROGRAM
@@ -178,9 +97,9 @@
 		}
  
 		//使用在高斯模糊中定义好的两个Pass
-		UsePass "Unlit/GaussianBlur/GAUSSIANBLUR_VERTICAL"
+		UsePass "Unlit/GaussianBlur/GAUSSIAN_BLUR_VERTICAL"
  
-		UsePass "Unlit/GaussianBlur/GAUSSIANBLUR_HORIZONTAL"
+		UsePass "Unlit/GaussianBlur/GAUSSIAN_BLUR_HORIZONTAL"
  
 		Pass
 		{

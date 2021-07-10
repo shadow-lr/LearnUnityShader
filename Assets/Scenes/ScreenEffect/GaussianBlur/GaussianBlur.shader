@@ -97,6 +97,7 @@
             #pragma fragment fragBlur
             ENDCG
         }
+
     }
     Fallback "Diffuse"
 }
